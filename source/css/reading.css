@@ -1,0 +1,440 @@
+/* Reading controls and long-form article improvements. Load after style.css. */
+.reading-controls {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 14px 0 18px;
+  color: #666;
+  font-size: 13px;
+}
+
+.reading-control {
+  min-height: 34px;
+  padding: 5px 10px;
+  border: 1px solid #d9e0e6;
+  border-radius: 4px;
+  background: #fff;
+  color: #34495e;
+  cursor: pointer;
+  font: inherit;
+}
+
+.reading-control:hover,
+.reading-control[aria-pressed="true"] {
+  border-color: #2196f3;
+  color: #0a6ebd;
+}
+
+.reading-control:focus-visible,
+.reading-code-button:focus-visible,
+.reading-toc-close:focus-visible,
+.reading-toc-toggle:focus-visible {
+  outline: 3px solid #1976d2;
+  outline-offset: 2px;
+}
+
+.reading-font-status {
+  min-width: 3.5em;
+  text-align: center;
+}
+
+.reading-toc-toggle {
+  display: none;
+}
+
+.reading-toc-toggle button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 40px;
+  padding: 4px 10px;
+  border: 1px solid #d9e0e6;
+  border-radius: 4px;
+  background: #fff;
+  color: #34495e;
+  font: inherit;
+  cursor: pointer;
+}
+
+.reading-toc-layer {
+  position: relative;
+}
+
+.reading-toc-close {
+  display: none;
+}
+
+.reading-toc .toc-item.is-current > a,
+.reading-toc .toc-item > a.is-current {
+  color: #0a6ebd;
+  font-weight: 700;
+}
+
+.reading-toc .toc-item.is-current::before {
+  position: absolute;
+  top: 0.55em;
+  left: -10px;
+  width: 3px;
+  height: 1em;
+  background: #2196f3;
+  content: "";
+}
+
+.reading-toc .toc-item > a {
+  display: inline-block;
+  max-width: 100%;
+  padding: 2px 0;
+  overflow-wrap: anywhere;
+}
+
+.reading-toc {
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.reading-toc .slimContent {
+  height: auto;
+  overflow: visible;
+}
+
+/* Avoid showing a hand-written chapter index beside the generated desktop TOC. */
+@media (min-width: 768px) {
+  body:not(.reading-mode) .article-entry.has-reading-sidebar .reading-index-heading,
+  body:not(.reading-mode) .article-entry.has-reading-sidebar .reading-index-content {
+    display: none !important;
+  }
+}
+
+/* The theme header is fixed on phones; leave room when navigating to anchors. */
+.article-entry h1[id],
+.article-entry h2[id],
+.article-entry h3[id],
+.article-entry h4[id],
+.article-entry h5[id],
+.article-entry h6[id],
+.article-entry > a[id] {
+  scroll-margin-top: 24px;
+}
+
+.article-entry > a[id] {
+  display: block;
+  height: 0;
+}
+
+/* Wrap Markdown tables independently so a wide table never widens the page. */
+.reading-table-wrap {
+  width: 100%;
+  max-width: 100%;
+  margin: 1.25em 0;
+  overflow-x: auto;
+  overscroll-behavior-inline: contain;
+  -webkit-overflow-scrolling: touch;
+  border: 1px solid #e6eaf0;
+  border-radius: 4px;
+}
+
+.reading-table-wrap:focus-visible {
+  outline: 3px solid #1976d2;
+  outline-offset: 2px;
+}
+
+.reading-table-wrap > table {
+  width: max-content;
+  min-width: 100%;
+  margin: 0;
+}
+
+.reading-table-wrap > table th,
+.reading-table-wrap > table td {
+  padding: 8px 10px;
+  border: 1px solid #e6eaf0;
+  vertical-align: top;
+}
+
+/* Keep line numbers in their own column; clipboard reads only the code column. */
+.reading-code-block[data-reading-code-block] {
+  position: relative;
+}
+
+.reading-code-tools {
+  position: absolute;
+  z-index: 2;
+  top: 3px;
+  right: 7px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  max-width: calc(100% - 75px);
+}
+
+.reading-code-button {
+  min-height: 25px;
+  padding: 2px 7px;
+  border: 1px solid #d4d9df;
+  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.94);
+  color: #3f4b57;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 12px;
+  line-height: 1.4;
+  white-space: nowrap;
+}
+
+.reading-code-button:hover,
+.reading-code-button[aria-pressed="true"] {
+  border-color: #2196f3;
+  color: #0a6ebd;
+}
+
+.reading-code-button[hidden] {
+  display: none !important;
+}
+
+.reading-copy-status {
+  max-width: 12em;
+  overflow: hidden;
+  color: #386641;
+  font-size: 11px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.reading-code-block.is-collapsed {
+  max-height: 23rem;
+  overflow: hidden;
+}
+
+.reading-code-block.is-wrapped .code pre,
+.reading-code-plain.is-wrapped pre {
+  white-space: pre-wrap !important;
+  overflow-wrap: anywhere;
+  word-break: normal;
+}
+
+.reading-code-block.is-wrapped .code .line {
+  height: auto;
+  line-height: 1.5;
+}
+
+.reading-code-plain {
+  padding-top: 34px !important;
+}
+
+/* Focused reading mode remains reversible from its toolbar. */
+body.reading-mode {
+  --reading-font-size: 18px;
+  --reading-line-height: 1.78;
+  --reading-content-width: 74ch;
+  padding-top: 0 !important;
+}
+
+body.reading-mode .header,
+body.reading-mode .sidebar,
+body.reading-mode .footer,
+body.reading-mode .bar-footer,
+body.reading-mode .article-footer,
+body.reading-mode #comments,
+body.reading-mode .donate-box {
+  display: none !important;
+}
+
+body.reading-mode .main {
+  float: none !important;
+  width: 100% !important;
+  min-height: 0;
+  margin: 0 !important;
+  padding: 20px clamp(16px, 4vw, 48px);
+}
+
+body.reading-mode .main .content {
+  width: 100%;
+  max-width: var(--reading-content-width);
+  min-height: 0;
+  margin: 0 auto;
+}
+
+body.reading-mode .reading-controls {
+  position: sticky;
+  z-index: 20;
+  top: 0;
+  padding: 8px 0;
+  background: rgba(255, 255, 255, 0.96);
+}
+
+body.reading-mode .article-entry {
+  font-size: var(--reading-font-size);
+  line-height: var(--reading-line-height);
+}
+
+/* Keep heading targets below the sticky reading controls after TOC navigation. */
+body.reading-mode .article-entry h1[id],
+body.reading-mode .article-entry h2[id],
+body.reading-mode .article-entry h3[id],
+body.reading-mode .article-entry h4[id],
+body.reading-mode .article-entry h5[id],
+body.reading-mode .article-entry h6[id],
+body.reading-mode .article-entry > a[id] {
+  scroll-margin-top: 72px;
+}
+
+body.reading-mode .article-entry.reading-line-loose {
+  --reading-line-height: 1.95;
+}
+
+.article-entry.reading-font-adjusted {
+  font-size: var(--reading-font-size);
+}
+
+.article-entry.reading-line-loose {
+  line-height: 1.9;
+}
+
+body.reading-mode.reading-width-wide {
+  --reading-content-width: 88ch;
+}
+
+@media (max-width: 767px) {
+  .article-entry h1[id],
+  .article-entry h2[id],
+  .article-entry h3[id],
+  .article-entry h4[id],
+  .article-entry h5[id],
+  .article-entry h6[id],
+  .article-entry > a[id] {
+    scroll-margin-top: 72px;
+  }
+
+  .reading-toc-toggle {
+    display: block;
+  }
+
+  .reading-toc-toggle button {
+    min-width: 44px;
+    min-height: 44px;
+  }
+
+  .reading-toc-backdrop:not([hidden]) {
+    position: fixed;
+    z-index: 1039;
+    inset: 53px 0 0;
+    display: block;
+    background: rgba(15, 23, 42, 0.45);
+  }
+
+  .reading-toc {
+    display: none !important;
+  }
+
+  .reading-toc.is-mobile-open {
+    position: fixed;
+    z-index: 1040;
+    top: 53px;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    display: block !important;
+    width: auto;
+    max-height: none;
+    padding: 0;
+    overflow: auto;
+    border: 0;
+    background: #fff;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
+  }
+
+  .reading-toc.is-mobile-open .slimContent,
+  .reading-toc.is-mobile-open .slimScrollDiv {
+    width: 100% !important;
+    height: auto !important;
+    max-height: none !important;
+    overflow: visible !important;
+  }
+
+  .reading-toc.is-mobile-open .article-toc {
+    padding: 18px 22px 32px;
+  }
+
+  .reading-toc-close {
+    display: inline-flex;
+    float: right;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    margin: -8px -8px 0 8px;
+    border: 0;
+    background: transparent;
+    color: #34495e;
+    cursor: pointer;
+    font-size: 28px;
+  }
+
+  body.reading-toc-open {
+    overflow: hidden;
+  }
+
+  body.reading-mode .main {
+    padding: 12px 16px;
+  }
+
+  body.reading-mode .reading-controls {
+    gap: 4px;
+    margin-right: -16px;
+    margin-left: -16px;
+    padding: 8px 16px;
+    overflow-x: auto;
+    flex-wrap: nowrap;
+  }
+
+  body.reading-mode .reading-control {
+    flex: 0 0 auto;
+  }
+
+  .reading-code-tools {
+    right: 4px;
+    gap: 3px;
+  }
+
+  .reading-code-button {
+    min-width: 44px;
+    min-height: 44px;
+    padding-right: 5px;
+    padding-left: 5px;
+    font-size: 11px;
+  }
+
+  .reading-code-block.highlight,
+  .reading-code-plain {
+    padding-top: 50px !important;
+  }
+
+  .reading-copy-status {
+    max-width: 6em;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html:focus-within {
+    scroll-behavior: auto !important;
+  }
+
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Width is adjustable when the sidebars are hidden in reading mode. */
+.reading-controls [data-reading-width] { display: none; }
+body.reading-mode .reading-controls [data-reading-width] { display: inline-block; }
+
+@media (min-width: 768px) {
+  .bar-footer .pager .reading-toc-toggle { display: none; }
+}

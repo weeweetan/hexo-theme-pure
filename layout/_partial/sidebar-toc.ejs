@@ -1,10 +1,19 @@
-<% if (!index && theme.config.toc && post.toc) { %>
-<aside class="sidebar sidebar-toc collapse" id="collapseToc" itemscope itemtype="http://schema.org/WPSideBar">
-  <div class="slimContent">
-    <nav id="toc" class="article-toc">
-      <h3 class="toc-title"><%= __('article.catalogue') %></h3>
-      <%- toc(post.content) %>
-    </nav>
+<%
+  var showReadingToc = !index && theme.config.toc && post.toc !== false &&
+    (post.layout === 'post' || post.toc === true);
+%>
+<% if (showReadingToc) { %>
+  <div class="reading-toc-layer">
+    <div class="reading-toc-backdrop" data-reading-toc-close hidden aria-hidden="true"></div>
+    <aside class="sidebar sidebar-toc reading-toc" id="collapseToc" data-reading-toc
+      aria-label="文章目录" aria-hidden="false" itemscope itemtype="http://schema.org/WPSideBar">
+      <div class="slimContent">
+        <nav id="toc" class="article-toc" aria-label="文章章节">
+          <button class="reading-toc-close" type="button" data-reading-toc-close aria-label="关闭文章目录">×</button>
+          <h3 class="toc-title"><%= __('article.catalogue') %></h3>
+          <%- toc(post.content) %>
+        </nav>
+      </div>
+    </aside>
   </div>
-</aside>
 <% } %>

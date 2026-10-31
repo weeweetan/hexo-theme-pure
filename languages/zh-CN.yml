@@ -58,6 +58,14 @@ insight:
   categories: 分类
   tags: 标签
   untitled: (未命名)
+  dialog: 站内搜索
+  close: 关闭搜索
+  submit_search: 提交搜索
+  prompt: 输入关键词开始搜索
+  loading: 正在加载搜索内容…
+  load_error: 搜索内容加载失败，请检查网络后重试。
+  retry: 重试
+  no_results: 没有找到相关内容，请换个关键词。
 unit:
   word: 字
   time: 分

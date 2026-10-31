@@ -4,6 +4,13 @@ A brand new default theme for [[Hexo](https://hexo.io)].  [Preview](http://cofes
 
 ![](screenshot/pure.png)
 
+## 特别感谢
+
+本项目 CDN 加速及安全防护由 Tencent EdgeOne 赞助
+
+[最佳亚洲 CDN、Edge 和安全解决方案 - 腾讯 EdgeOne](https://edgeone.ai/?from=github)
+![](https://edgeone.ai/media/34fe3a45-492d-4ea4-ae5d-ea1087ca7b4b.png)
+
 ## 特色
 
 - 多语言
@@ -199,9 +206,23 @@ pv:
 
 如果不需要第三方来统计浏览量，只需将相应设置改为false即可（设置为false后不会加载第三方JS脚本）
 
-### Github respostory
+### 项目
 
 复制`theme/pure/_source/` 目录下`repository`文件夹到`blog path/source/` 目录下
+
+新版配置（支持 Github 和 Gitee）：
+
+*新版配置将会覆盖旧版的 github 配置！*
+
+```
+# Repository Info (This will override 'github' option)
+# 项目仓库展示信息（将会覆盖 github 项）
+repository:
+  platform: github # 托管平台（github | gitee）
+  username: *** # 用户名
+```
+
+旧版配置（仅支持 Github）：
 
 ```
 # Github

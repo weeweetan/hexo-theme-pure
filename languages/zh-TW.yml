@@ -58,6 +58,14 @@ insight:
   categories: 分類
   tags: 標籤
   untitled: (未命名)
+  dialog: 站內搜尋
+  close: 關閉搜尋
+  submit_search: 提交搜尋
+  prompt: 輸入關鍵詞開始搜尋
+  loading: 正在載入搜尋內容…
+  load_error: 搜尋內容載入失敗，請檢查網路後重試。
+  retry: 重試
+  no_results: 找不到相關內容，請更換關鍵詞。
 unit:
   word: 字
   time: 分

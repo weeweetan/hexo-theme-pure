@@ -10,10 +10,23 @@
         <%- partial('post/category') %>
         <%- partial('post/tag') %>
         <%- partial('post/pv') %>
-        <span class="post-comment"><i class="icon icon-comment"></i> <a href="<%- url_for(post.path) %>#comments" class="article-comment-link"><%= __('article.comments') %></a></span>
+        <% if (pure_comments_enabled(post)) { %>
+          <span class="post-comment"><i class="icon icon-comment" aria-hidden="true"></i> <a href="<%- url_for(post.path) %>#comments" class="article-comment-link"><%= __('article.comments') %></a></span>
+        <% } %>
         <%- partial('post/wordcount') %>
       </div>
     </div>
+    <% if (!index && post.layout === 'post') { %>
+      <div class="reading-controls" data-reading-controls role="group" aria-label="阅读设置">
+        <button class="reading-control reading-mode-toggle" type="button" data-reading-mode-toggle aria-pressed="false">阅读模式</button>
+        <span class="reading-control-label">字号</span>
+        <button class="reading-control" type="button" data-reading-font="down" aria-label="缩小字号">A−</button>
+        <output class="reading-font-status" data-reading-font-status aria-live="polite"></output>
+        <button class="reading-control" type="button" data-reading-font="up" aria-label="增大字号">A+</button>
+        <button class="reading-control" type="button" data-reading-line-height aria-pressed="false">宽松行距</button>
+        <button class="reading-control" type="button" data-reading-width aria-pressed="false">加宽正文</button>
+      </div>
+    <% } %>
     <div class="article-entry marked-body" itemprop="articleBody">
       <% if (post.excerpt && index){ %>
         <%- post.excerpt %>
