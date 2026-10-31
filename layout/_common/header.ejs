@@ -4,12 +4,12 @@
       <% if(theme.profile && theme.profile.enabled) { %>
       <% var profile = theme.profile; %>
       <div class="profile-block text-center">
-        <a id="avatar" href="<%= profile.follow %>" target="_blank">
-          <img class="img-circle img-rotate" src="<%= ( profile.gravatar ? gravatar(profile.gravatar, 128) : url_for(profile.avatar)) %>" width="200" height="200">
+        <a id="avatar" href="<%= profile.follow %>" target="_blank" rel="noopener noreferrer">
+          <img class="img-circle img-rotate" src="<%= ( profile.gravatar ? gravatar(profile.gravatar, 128) : url_for(profile.avatar)) %>" width="200" height="200" alt="<%= profile.author || config.author %>">
         </a>
         <h2 id="name" class="hidden-xs hidden-sm"><%= profile.author %></h2>
-        <h3 id="title" class="hidden-xs hidden-sm hidden-md"><%= profile.author_title %></h3>
-        <small id="location" class="text-muted hidden-xs hidden-sm"><i class="icon icon-map-marker"></i> <%= profile.location %></small>
+        <% if (profile.author_title) { %><h3 id="title" class="hidden-xs hidden-sm hidden-md"><%= profile.author_title %></h3><% } %>
+        <% if (profile.location) { %><small id="location" class="text-muted hidden-xs hidden-sm"><i class="icon icon-map-marker"></i> <%= profile.location %></small><% } %>
       </div>
       <% } %>
       <%- partial('_search/index') %>
@@ -22,7 +22,7 @@
     </div>
     <nav id="main-navbar" class="collapse navbar-collapse" itemscope itemtype="http://schema.org/SiteNavigationElement" role="navigation">
       <ul class="nav navbar-nav main-nav <%- theme.config.menu_highlight ? 'menu-highlight' : '' %>">
-        <% for (var i in theme.menu){ %>
+        <% for (var i in theme.menu){ if (!theme.menu[i]) continue; %>
         <% var itemName = i.toLowerCase(); %>
         <li class="menu-item menu-item-<%= itemName %>">
           <a href="<%- url_for(theme.menu[i]) %>">

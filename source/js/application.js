@@ -4,7 +4,7 @@ $(function() {
 
   // slimscroll
   if (typeof $.fn.slimScroll != 'undefined') {
-    $(".sidebar .slimContent").slimScroll({
+    $(".sidebar:not(.sidebar-toc) .slimContent").slimScroll({
       height: $(window).height(),
       color: "rgba(0,0,0,0.15)",
       size: "5px",
@@ -12,14 +12,6 @@ $(function() {
       // allowPageScroll: true
     });
   }
-
-  $('#collapseToc').on('shown.bs.collapse', function() {
-    // do something…
-    // slimscroll
-    if (typeof $.fn.slimScroll != 'undefined') {
-      $(".sidebar .slimContent").slimScroll().on('slimscroll');
-    }
-  });
 
   // geopattern 背景生成
   $(".geopattern").each(function() {

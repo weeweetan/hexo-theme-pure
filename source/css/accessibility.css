@@ -1,0 +1,29 @@
+/* Loaded after the legacy stylesheet, which removes browser focus outlines. */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+[tabindex]:focus-visible {
+  outline: 2px solid #0969b8 !important;
+  outline-offset: 3px;
+}
+.skip-link {
+  position: fixed;
+  top: 8px;
+  left: 8px;
+  z-index: 11000;
+  padding: 10px 16px;
+  color: #fff;
+  background: #16436a;
+  transform: translateY(-160%);
+}
+.skip-link:focus { transform: none; color: #fff; }
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto !important; }
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

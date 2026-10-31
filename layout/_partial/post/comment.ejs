@@ -1,4 +1,4 @@
-<% if (post.comments) { %>
+<% if (pure_comments_enabled(post)) { %>
   <section id="comments">
   	<% if (theme.comment.type === 'disqus') { %>
       <div id="disqus_thread">

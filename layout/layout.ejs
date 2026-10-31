@@ -12,8 +12,9 @@
 	bodyClass = page.sidebar === 'none' ? (bodyClass + ' no-sidebar') : bodyClass;
 %>
 <body class="<%= bodyClass %>" itemscope itemtype="http://schema.org/WebPage">
+  <a class="skip-link" href="#main-content"><%= String(config.language).indexOf("zh") === 0 ? "跳到正文" : "Skip to content" %></a>
   <%- partial('_common/header', null, {cache: !config.relative_link}) %>
-  <% if (theme.sidebar && (page.sidebar!='none' || page.sidebar!='custom')){ %>
+  <% if (theme.sidebar && (page.sidebar!='none' && page.sidebar!='custom')){ %>
     <%- partial('_partial/sidebar', null, {cache: !config.relative_link}) %>
   <% } %>
   <%- body %>

@@ -4,7 +4,7 @@
   <meta name="referrer" content="never">
   <% } %>
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="renderer" content="webkit">
   <meta http-equiv="Cache-Control" content="no-transform" />
   <meta http-equiv="Cache-Control" content="no-siteapp" />
@@ -45,22 +45,25 @@
   <!-- Canonical links -->
   <link rel="canonical" href="<%- url %>">
   <% if (theme.rss){ %>
-    <link rel="alternate" href="<%- theme.rss %>" title="<%= config.title %>" type="application/atom+xml">
+    <link rel="alternate" href="<%= url_for(theme.rss) %>" title="<%= config.title %>" type="application/atom+xml">
   <% } %>
   <% if (theme.site.favicon){ %>
-    <link rel="icon" href="<%- theme.site.favicon %>" type="image/x-icon">
+    <link rel="icon" href="<%= url_for(theme.site.favicon) %>" type="image/x-icon">
   <% } %>
   <%- css('css/style') %>
+  <%- css('css/accessibility') %>
+  <% if (theme.search.insight) { %><%- css('css/search') %><% } %>
+  <% if (is_post() || is_page()) { %><%- css('css/reading') %><% } %>
   <% if (page.mathjax) { %>
     <link href="//cdn.jsdelivr.net/npm/katex@0.9.0/dist/katex.min.css" rel="stylesheet">
   <% } %>
-  <% if (theme.comment.type === 'gitment' && !is_home() && !is_category() && !is_tag() && !is_archive() && post.comments) { %>
+  <% if (theme.comment.type === 'gitment' && !is_home() && !is_category() && !is_tag() && !is_archive() && pure_comments_enabled(post)) { %>
     <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitment@0.0.3/style/default.min.css">
   <% } %>
   <% if (theme.fancybox) { %>
     <link href="//cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.3.5/dist/jquery.fancybox.min.css" rel="stylesheet">
   <% } %>
-  <% if (theme.comment.type === 'gitalk') { %>
+  <% if (theme.comment.type === 'gitalk' && !is_home() && !is_category() && !is_tag() && !is_archive() && pure_comments_enabled(post)) { %>
     <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1.4.0/dist/gitalk.min.css">
   <% } %>
 </head>

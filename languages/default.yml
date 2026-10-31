@@ -58,6 +58,14 @@ insight:
   categories: Categories
   tags: Tags
   untitled: (Untitled)
+  dialog: Site search
+  close: Close search
+  submit_search: Submit search
+  prompt: Enter a search term to begin.
+  loading: Loading search content…
+  load_error: Search content could not be loaded. Please retry.
+  retry: Retry
+  no_results: No results found. Try another search term.
 unit:
   word: words
   time: minutes
