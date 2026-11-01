@@ -188,3 +188,10 @@ title: Hello World
 mathjax: true
 ```
 
+
+
+### Reading and discovery extensions
+
+The reading toolbar keeps a table-of-contents drawer available in focused mode. Font size, line spacing, content width and focused mode are remembered locally; storage failures do not disable the controls. Search results show literal highlighted matches and nearby text. Optional `sections` entries (`title`, `id`, `start`, `end`) refer to offsets in the indexed plain text and enable chapter links; older indexes still work.
+
+Only an explicit front-matter `updated` value newer than `date` is displayed, so cloning does not mark every article as newly edited. An optional `source/_data/series.yml` maps series keys to `title`, `path`, `description` and `groups` of source post filenames. Set `series_index` on a page to render its ordered index; matching posts receive series navigation, and the homepage shows the series entry. Missing configured articles fail the build instead of generating broken links.
