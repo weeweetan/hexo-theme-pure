@@ -13,4 +13,6 @@ test('only explicit content updates are shown, not clone-time filesystem timesta
   assert.equal(explicitUpdated(post), false);
   assert.equal(explicitUpdated({ ...post, raw: '---\ntitle: Test\nupdated: 2026-10-30\n---\nbody' }), true);
   assert.equal(explicitUpdated({ ...post, raw: '---\ntitle: Test\n---\nupdated: example in body' }), false);
+  assert.equal(explicitUpdated({ ...post, raw: '---\nupdated:\ntitle: Test\n---' }), false);
+  assert.equal(explicitUpdated({ ...post, raw: '---\nupdated: # not set\ntitle: Test\n---' }), false);
 });

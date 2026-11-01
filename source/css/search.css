@@ -46,4 +46,20 @@
 
 .ins-search-item mark { padding: 0 2px; color: #183c4a; background: #ffe7a3; }
 .ins-search-chapter { display: block; margin: 5px 0; font-size: 12px; color: #17657a; }
-.ins-search-item.active .ins-search-chapter { color: inherit; }
+.ins-search-item.active .ins-search-chapter,
+.ins-search-item:hover .ins-search-chapter { color: inherit; }
+.ins-search .ins-section .ins-search-item:hover,
+.ins-search .ins-section .ins-search-item.active { color: #fff; }
+.ins-search .ins-section .ins-search-item .ins-search-preview {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  white-space: normal;
+  height: auto;
+  color: #52616b;
+  line-height: 1.65;
+  margin: 6px 0 0;
+  overflow: hidden;
+}
+.ins-search .ins-section .ins-search-item:hover .ins-search-preview,
+.ins-search .ins-section .ins-search-item.active .ins-search-preview { color: inherit; }
