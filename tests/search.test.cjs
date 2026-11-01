@@ -2,7 +2,7 @@
 
 const test = require('node:test');
 const assert = require('node:assert/strict');
-const { search, tokenize } = require('../source/js/search-core.js');
+const { search, tokenize, snippet, highlight, sectionFor } = require('../source/js/search-core.js');
 
 test('tokenizes whitespace-separated Chinese and Latin search terms', () => {
   assert.deepEqual(tokenize('  Nginx\t日志  模块 '), ['NGINX', '日志', '模块']);
@@ -84,4 +84,28 @@ test('empty queries and missing index arrays return no matches safely', () => {
     categories: [],
     tags: []
   });
+});
+
+test('snippets reveal body matches beyond the introduction and highlight literal text safely', () => {
+  const text = '开头说明。'.repeat(100) + '观察 runqlat 的延迟分布。' + '后续内容。'.repeat(100);
+  const result = snippet(text, 'runqlat');
+  assert.ok(result.includes('runqlat'));
+  assert.ok(result.startsWith('…') && result.endsWith('…'));
+  assert.ok(result.length <= 162);
+  assert.deepEqual(highlight('<img src=x> C[17]', '['), [
+    { text: '<img src=x> C', match: false }, { text: '[', match: true }, { text: '17]', match: false }
+  ]);
+});
+
+test('section results link to matching chapters, with article fallback for old indexes and title-only queries', () => {
+  const post = { title: 'Nginx 笔记', text: '简介。调度 runqlat 延迟。磁盘 biolatency。', sections: [
+    { title: '调度', id: 'CPU', start: 3, end: 17 },
+    { title: '磁盘', id: '磁盘', start: 17, end: 30 }
+  ] };
+  post.sections[1].end = post.text.length;
+  assert.equal(sectionFor(post, 'Nginx runqlat').id, 'CPU');
+  assert.equal(sectionFor(post, 'biolatency').id, '磁盘');
+  assert.equal(sectionFor(post, 'Nginx'), null);
+  assert.equal(sectionFor({ title: 'old', text: 'runqlat' }, 'runqlat'), null);
+  assert.equal(sectionFor({ ...post, sections: [{ id: 'bad', start: -1, end: 999 }] }, 'runqlat'), null);
 });

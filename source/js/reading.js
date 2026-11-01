@@ -27,7 +27,8 @@
     if (!body || !article || !content) return;
 
     var toc = document.querySelector('[data-reading-toc]');
-    var tocToggle = document.querySelector('[data-reading-toc-toggle]');
+    var tocToggles = document.querySelectorAll('[data-reading-toc-toggle]');
+    var tocToggle = tocToggles[0];
     var tocCloseButtons = toc ? toc.querySelectorAll('[data-reading-toc-close]') : [];
     var backdrop = document.querySelector('.reading-toc-backdrop');
     var mobileQuery = window.matchMedia ? window.matchMedia('(max-width: 767px)') : null;
@@ -37,6 +38,10 @@
 
     function isMobile() {
       return mobileQuery ? mobileQuery.matches : window.innerWidth <= 767;
+    }
+
+    function usesTocDrawer() {
+      return isMobile() || body.classList.contains('reading-mode');
     }
 
     function tocIsOpen() {
@@ -63,7 +68,7 @@
 
     function setTocA11yState(open) {
       if (!toc) return;
-      if (isMobile()) {
+      if (usesTocDrawer()) {
         toc.setAttribute('role', 'dialog');
         toc.setAttribute('aria-hidden', open ? 'false' : 'true');
         if (open) toc.setAttribute('aria-modal', 'true');
@@ -73,12 +78,15 @@
         toc.setAttribute('aria-hidden', 'false');
         toc.removeAttribute('aria-modal');
       }
-      if (tocToggle) tocToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+      Array.prototype.forEach.call(tocToggles, function (button) {
+        button.setAttribute('aria-expanded', open ? 'true' : 'false');
+      });
     }
 
     function syncTocViewport() {
       if (!toc) return;
-      if (!isMobile() && tocIsOpen()) {
+      body.classList.toggle('reading-toc-drawer', usesTocDrawer());
+      if (!usesTocDrawer() && tocIsOpen()) {
         closeToc(false);
       }
       setTocA11yState(tocIsOpen());
@@ -94,7 +102,7 @@
     }
 
     function openToc(trigger) {
-      if (!toc || !isMobile() || body.classList.contains('ins-search-open')) return;
+      if (!toc || !usesTocDrawer() || body.classList.contains('ins-search-open')) return;
       if (tocIsOpen()) return;
       savedTocFocus = trigger || document.activeElement || tocToggle;
       toc.classList.add('is-mobile-open');
@@ -137,7 +145,7 @@
 
     function handleTocClick(event) {
       var link = closest(event.target, 'a[href^="#"]');
-      if (!link || !toc || !toc.contains(link) || !isMobile() || !tocIsOpen()) return;
+      if (!link || !toc || !toc.contains(link) || !usesTocDrawer() || !tocIsOpen()) return;
       var destination = findTocDestination(link);
       closeToc(false);
       if (!destination) return;
@@ -154,9 +162,11 @@
       if (mobileQuery && mobileQuery.addEventListener) mobileQuery.addEventListener('change', syncTocViewport);
       else if (mobileQuery && mobileQuery.addListener) mobileQuery.addListener(syncTocViewport);
 
-      if (tocToggle) tocToggle.addEventListener('click', function () {
-        if (tocIsOpen()) closeToc(true);
-        else openToc(tocToggle);
+      Array.prototype.forEach.call(tocToggles, function (button) {
+        button.addEventListener('click', function () {
+          if (tocIsOpen()) closeToc(true);
+          else openToc(button);
+        });
       });
       Array.prototype.forEach.call(tocCloseButtons, function (button) {
         button.addEventListener('click', function () { closeToc(true); });
@@ -407,6 +417,23 @@
       var widthButton = controls.querySelector('[data-reading-width]');
       var fontSize = Math.round(parseFloat(window.getComputedStyle(content).fontSize) || 16);
       var fontCustomized = false;
+      var preferences = {};
+      try { preferences = JSON.parse(window.localStorage.getItem('pure-reading-preferences-v1')) || {}; } catch (error) { /* Storage is optional. */ }
+      if (Number.isInteger(preferences.fontSize) && preferences.fontSize >= 14 && preferences.fontSize <= 24) {
+        fontSize = preferences.fontSize;
+        fontCustomized = true;
+      }
+
+      function savePreferences() {
+        try {
+          window.localStorage.setItem('pure-reading-preferences-v1', JSON.stringify({
+            fontSize: fontSize,
+            mode: body.classList.contains('reading-mode'),
+            loose: content.classList.contains('reading-line-loose'),
+            wide: body.classList.contains('reading-width-wide')
+          }));
+        } catch (error) { /* Reading controls also work when storage is blocked. */ }
+      }
 
       function updateFontStatus() {
         if (fontStatus) fontStatus.textContent = fontSize + 'px';
@@ -414,6 +441,7 @@
         content.style.setProperty('--reading-font-size', fontSize + 'px');
       }
       function setMode(enabled) {
+        if (tocIsOpen()) closeToc(false);
         body.classList.toggle('reading-mode', enabled);
         if (modeButton) {
           modeButton.setAttribute('aria-pressed', enabled ? 'true' : 'false');
@@ -423,11 +451,18 @@
           fontSize = 18;
           updateFontStatus();
         }
+        syncTocViewport();
       }
 
+      content.classList.toggle('reading-line-loose', preferences.loose === true);
+      body.classList.toggle('reading-width-wide', preferences.wide === true);
+      if (lineButton) lineButton.setAttribute('aria-pressed', preferences.loose === true ? 'true' : 'false');
+      if (widthButton) widthButton.setAttribute('aria-pressed', preferences.wide === true ? 'true' : 'false');
+      setMode(preferences.mode === true);
       updateFontStatus();
       if (modeButton) modeButton.addEventListener('click', function () {
         setMode(!body.classList.contains('reading-mode'));
+        savePreferences();
       });
       controls.addEventListener('click', function (event) {
         var fontButton = closest(event.target, '[data-reading-font]');
@@ -435,16 +470,19 @@
           fontCustomized = true;
           fontSize = Math.max(14, Math.min(24, fontSize + (fontButton.getAttribute('data-reading-font') === 'up' ? 1 : -1)));
           updateFontStatus();
+          savePreferences();
           return;
         }
         if (lineButton && (event.target === lineButton || lineButton.contains(event.target))) {
           var loose = content.classList.toggle('reading-line-loose');
           lineButton.setAttribute('aria-pressed', loose ? 'true' : 'false');
+          savePreferences();
           return;
         }
         if (widthButton && (event.target === widthButton || widthButton.contains(event.target))) {
           var wide = body.classList.toggle('reading-width-wide');
           widthButton.setAttribute('aria-pressed', wide ? 'true' : 'false');
+          savePreferences();
         }
       });
     }

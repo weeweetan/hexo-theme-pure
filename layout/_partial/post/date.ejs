@@ -4,3 +4,6 @@
 	  <time datetime="<%= date_xml(post.date) %>" itemprop="datePublished"><%= date(post.date, date_format) %></time>
 	</a>
 </span>
+<% if (pure_explicit_updated(post)) { %>
+<span class="article-updated">更新于 <time datetime="<%= date_xml(post.updated) %>" itemprop="dateModified"><%= date(post.updated, 'YYYY-MM-DD') %></time></span>
+<% } %>

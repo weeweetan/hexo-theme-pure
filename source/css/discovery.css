@@ -1,0 +1,21 @@
+.article-updated { display: inline-block; margin-left: 10px; color: #526c77; }
+.series-entry { display: block; margin: 24px 0 18px; padding: 16px 20px; border: 1px solid #dce7ed; border-radius: 8px; background: #f6fafc; color: #254b59; }
+.series-entry span, .series-entry strong, .series-entry small { display: block; }
+.series-entry span { font-size: 12px; letter-spacing: .4px; color: #526c77; }
+.series-entry strong { margin: 5px 0; font-size: 20px; }
+.series-entry small { font-size: 13px; line-height: 1.7; }
+.series-entry:hover { border-color: #187c91; text-decoration: none; }
+.series-group { margin: 28px 0; }
+.series-group li { margin: 16px 0; padding-left: 5px; }
+.series-group li p { margin: 4px 0; color: #52616b; font-size: 14px; }
+.series-navigation { margin: 30px 0 16px; padding: 18px; border: 1px solid #dce7ed; border-radius: 6px; background: #f6fafc; }
+.series-navigation p { display: flex; gap: 10px; flex-wrap: wrap; justify-content: space-between; margin: 0 0 12px; }
+.series-navigation p span { font-size: 12px; color: #526c77; }
+.series-navigation > div { display: flex; gap: 14px; }
+.series-navigation > div a { flex: 1; min-width: 0; overflow-wrap: anywhere; }
+.series-navigation small { display: block; color: #526c77; font-size: 12px; }
+.link-avatar-placeholder { display: inline-flex; width: 64px; height: 64px; align-items: center; justify-content: center; background: #edf4f7; color: #315e70; font-size: 24px; border-radius: 8px; }
+@media (max-width: 600px) {
+  .series-entry { margin-top: 16px; padding: 14px 16px; }
+  .series-navigation > div { flex-direction: column; }
+}

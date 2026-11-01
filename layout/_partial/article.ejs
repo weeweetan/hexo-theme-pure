@@ -19,6 +19,9 @@
     <% if (!index && post.layout === 'post') { %>
       <div class="reading-controls" data-reading-controls role="group" aria-label="阅读设置">
         <button class="reading-control reading-mode-toggle" type="button" data-reading-mode-toggle aria-pressed="false">阅读模式</button>
+        <% if (theme.config.toc && post.toc !== false) { %>
+        <button class="reading-control reading-toolbar-toc" type="button" data-reading-toc-toggle aria-controls="collapseToc" aria-expanded="false">文章目录</button>
+        <% } %>
         <span class="reading-control-label">字号</span>
         <button class="reading-control" type="button" data-reading-font="down" aria-label="缩小字号">A−</button>
         <output class="reading-font-status" data-reading-font-status aria-live="polite"></output>
@@ -38,7 +41,9 @@
       <% } else { %>
         <%- post.content %>
       <% } %>
+      <% if (post.series_index) { %><%- partial('series-list', {series: pure_series(post.series_index)}) %><% } %>
     </div>
+    <% if (!index && post.layout === 'post') { %><%- partial('post/series') %><% } %>
     <div class="article-footer">
       <%- partial('post/copyright') %>
     </div>
