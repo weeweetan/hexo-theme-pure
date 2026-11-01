@@ -1,0 +1,9 @@
+<% var series = pure_series_navigation(post); if (series) { %>
+<nav class="series-navigation" aria-label="同专题阅读顺序">
+  <p><a href="<%- url_for(series.path) %>"><%= series.title %> · 查看完整路线</a><span>第 <%= series.position %> / <%= series.total %> 篇</span></p>
+  <div>
+    <% if (series.previous) { %><a href="<%- url_for(series.previous.path) %>" rel="prev"><small>上一篇</small><%= series.previous.title %></a><% } %>
+    <% if (series.next) { %><a href="<%- url_for(series.next.path) %>" rel="next"><small>下一篇</small><%= series.next.title %></a><% } %>
+  </div>
+</nav>
+<% } %>

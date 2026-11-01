@@ -1,4 +1,7 @@
 <main id="main-content" class="main" role="main" tabindex="-1">
+  <% if (!page.prev) { Object.keys(site.data.series || {}).forEach(function (key) { var series = pure_series(key); %>
+  <a class="series-entry" href="<%- url_for(series.path) %>"><span>专题路线 · <%= series.posts.length %> 篇</span><strong><%= series.title %> →</strong><small><%= series.description %></small></a>
+  <% }); } %>
   <%- partial('_partial/archive-list', {index: true}) %>
   <%- partial('_partial/pagination', {type: 'page'}) %> 
 </main>

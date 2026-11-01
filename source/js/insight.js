@@ -76,9 +76,20 @@
       heading.textContent = title;
       section.appendChild(heading);
 
+      var query = input.value.trim();
+      function appendHighlighted(node, value) {
+        core.highlight(value, query).forEach(function (part) {
+          var child = part.match ? document.createElement('mark') : document.createTextNode(part.text);
+          if (part.match) child.textContent = part.text;
+          node.appendChild(child);
+        });
+      }
+
       items.forEach(function (item) {
+        var chapter = kind === 'POSTS' || kind === 'PAGES' ? core.sectionFor(item, query) : null;
         var href = resolveUrl(kind === 'POSTS' || kind === 'PAGES' ? item.path : item.permalink);
         if (!href) return;
+        if (chapter) href = href.split('#')[0] + '#' + encodeURIComponent(chapter.id);
 
         var link = document.createElement('a');
         link.className = 'ins-selectable ins-search-item';
@@ -88,8 +99,15 @@
         var titleNode = document.createElement('header');
         titleNode.className = 'ins-search-item-title';
         var title = kind === 'POSTS' || kind === 'PAGES' ? item.title : item.name;
-        titleNode.textContent = typeof title === 'string' && title ? title : message('UNTITLED', '(未命名)');
+        appendHighlighted(titleNode, typeof title === 'string' && title ? title : message('UNTITLED', '(未命名)'));
         link.appendChild(titleNode);
+
+        if (chapter) {
+          var chapterNode = document.createElement('span');
+          chapterNode.className = 'ins-search-chapter';
+          appendHighlighted(chapterNode, '章节 · ' + chapter.title);
+          link.appendChild(chapterNode);
+        }
 
         if (item.slug) {
           var slug = document.createElement('span');
@@ -101,7 +119,7 @@
         if ((kind === 'POSTS' || kind === 'PAGES') && item.text) {
           var preview = document.createElement('p');
           preview.className = 'ins-search-preview';
-          preview.textContent = String(item.text).slice(0, 150);
+          appendHighlighted(preview, core.snippet(chapter ? item.text.slice(chapter.start, chapter.end) : item.text, query));
           link.appendChild(preview);
         }
 

@@ -316,66 +316,6 @@ body.reading-mode.reading-width-wide {
     min-height: 44px;
   }
 
-  .reading-toc-backdrop:not([hidden]) {
-    position: fixed;
-    z-index: 1039;
-    inset: 53px 0 0;
-    display: block;
-    background: rgba(15, 23, 42, 0.45);
-  }
-
-  .reading-toc {
-    display: none !important;
-  }
-
-  .reading-toc.is-mobile-open {
-    position: fixed;
-    z-index: 1040;
-    top: 53px;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    display: block !important;
-    width: auto;
-    max-height: none;
-    padding: 0;
-    overflow: auto;
-    border: 0;
-    background: #fff;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
-  }
-
-  .reading-toc.is-mobile-open .slimContent,
-  .reading-toc.is-mobile-open .slimScrollDiv {
-    width: 100% !important;
-    height: auto !important;
-    max-height: none !important;
-    overflow: visible !important;
-  }
-
-  .reading-toc.is-mobile-open .article-toc {
-    padding: 18px 22px 32px;
-  }
-
-  .reading-toc-close {
-    display: inline-flex;
-    float: right;
-    align-items: center;
-    justify-content: center;
-    width: 44px;
-    height: 44px;
-    margin: -8px -8px 0 8px;
-    border: 0;
-    background: transparent;
-    color: #34495e;
-    cursor: pointer;
-    font-size: 28px;
-  }
-
-  body.reading-toc-open {
-    overflow: hidden;
-  }
-
   body.reading-mode .main {
     padding: 12px 16px;
   }
@@ -438,3 +378,68 @@ body.reading-mode .reading-controls [data-reading-width] { display: inline-block
 @media (min-width: 768px) {
   .bar-footer .pager .reading-toc-toggle { display: none; }
 }
+
+/* The same accessible drawer works on phones and in focused reading mode. */
+.reading-toc-drawer .reading-toc-backdrop:not([hidden]) {
+  position: fixed;
+  z-index: 1039;
+  inset: var(--reading-toc-top, 53px) 0 0;
+  display: block;
+  background: rgba(15, 23, 42, 0.45);
+}
+
+.reading-toc-drawer .reading-toc {
+  display: none !important;
+}
+
+.reading-toc-drawer .reading-toc.is-mobile-open {
+  position: fixed;
+  z-index: 1040;
+  top: var(--reading-toc-top, 53px);
+  right: 0;
+  bottom: 0;
+  left: auto;
+  display: block !important;
+  width: min(420px, 100%);
+  max-height: none;
+  padding: 0;
+  overflow: auto;
+  border: 0;
+  background: #fff;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
+}
+
+.reading-toc-drawer .reading-toc.is-mobile-open .slimContent,
+.reading-toc-drawer .reading-toc.is-mobile-open .slimScrollDiv {
+  width: 100% !important;
+  height: auto !important;
+  max-height: none !important;
+  overflow: visible !important;
+}
+
+.reading-toc-drawer .reading-toc.is-mobile-open .article-toc {
+  padding: 18px 22px 32px;
+}
+
+.reading-toc-drawer .reading-toc-close {
+  display: inline-flex;
+  float: right;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  margin: -8px -8px 0 8px;
+  border: 0;
+  background: transparent;
+  color: #34495e;
+  cursor: pointer;
+  font-size: 28px;
+}
+
+body.reading-toc-open {
+  overflow: hidden;
+}
+
+body.reading-mode { --reading-toc-top: 0px; }
+.reading-toolbar-toc { display: none; }
+.reading-toc-drawer .reading-toolbar-toc { display: inline-block; }

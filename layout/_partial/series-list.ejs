@@ -1,0 +1,16 @@
+<% if (series) { %>
+<div class="series-list">
+<% var position = 0; series.groups.forEach(function (group) { %>
+  <section class="series-group">
+    <h2><%= group.title %></h2>
+    <ol start="<%= position + 1 %>">
+    <% group.posts.forEach(function (item) { position++; %>
+      <li><a href="<%- url_for(item.path) %>"><%= item.title %></a>
+        <% if (item.description) { %><p><%= item.description %></p><% } %>
+      </li>
+    <% }); %>
+    </ol>
+  </section>
+<% }); %>
+</div>
+<% } %>

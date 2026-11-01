@@ -104,8 +104,61 @@
     };
   }
 
+  function snippet(value, query, size) {
+    var source = text(value).replace(/\s+/g, ' ').trim();
+    var length = size || 160;
+    var upper = source.toLocaleUpperCase();
+    var positions = tokenize(query).map(function (term) { return upper.indexOf(term); }).filter(function (at) { return at >= 0; });
+    var first = positions.length ? Math.min.apply(Math, positions) : 0;
+    var start = Math.max(0, first - Math.floor(length / 3));
+    start = Math.min(start, Math.max(0, source.length - length));
+    return (start ? '…' : '') + source.slice(start, start + length) + (start + length < source.length ? '…' : '');
+  }
+
+  // Return text runs, never HTML: search terms and article text are untrusted.
+  function highlight(value, query) {
+    var source = text(value);
+    var terms = tokenize(query).sort(function (a, b) { return b.length - a.length; });
+    var upper = source.toLocaleUpperCase();
+    var parts = [];
+    var cursor = 0;
+    while (cursor < source.length) {
+      var next = -1;
+      var matched = '';
+      terms.forEach(function (term) {
+        var at = upper.indexOf(term, cursor);
+        if (at >= 0 && (next < 0 || at < next)) { next = at; matched = term; }
+      });
+      if (next < 0) { parts.push({ text: source.slice(cursor), match: false }); break; }
+      if (next > cursor) parts.push({ text: source.slice(cursor, next), match: false });
+      parts.push({ text: source.slice(next, next + matched.length), match: true });
+      cursor = next + matched.length;
+    }
+    return parts;
+  }
+
+  function sectionFor(item, query) {
+    var terms = tokenize(query);
+    var body = text(item.text);
+    // A title-only query should lead to the article introduction.
+    if (!terms.length || terms.every(function (term) { return text(item.title).toLocaleUpperCase().includes(term); })) return null;
+    var candidates = (Array.isArray(item.sections) ? item.sections : []).filter(function (section) {
+      return section && typeof section.id === 'string' && section.id && Number.isInteger(section.start) &&
+        Number.isInteger(section.end) && section.start >= 0 && section.end > section.start && section.end <= body.length;
+    }).map(function (section) {
+      var value = { title: text(item.title) + ' ' + text(section.title), text: body.slice(section.start, section.end) };
+      return { section: section, value: value, score: weight({ title: section.title, text: value.text }, ['title', 'text'], terms, [8, 1]) };
+    }).filter(function (candidate) {
+      return matches(candidate.value, ['title', 'text'], terms);
+    }).sort(function (a, b) { return b.score - a.score; });
+    return candidates.length ? candidates[0].section : null;
+  }
+
   return {
     tokenize: tokenize,
-    search: search
+    search: search,
+    snippet: snippet,
+    highlight: highlight,
+    sectionFor: sectionFor
   };
 });
